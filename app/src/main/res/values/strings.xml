@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_favorite_active">Unfavorite</string>
+    <string name="action_search">Tim</string>
+    <string name="app_home">Trang chu</string>
+    <string name="app_detail">Chi tiet</string>
+    <string name="app_reader">Doc truyen</string>
+    <string name="app_name">ComicV2</string>
+
+    <!-- Activity name -->
+    <string name="places_sample_activity_title">Places Sample</string>
+    <string name="youtube_sample_activity_title">Youtube Sample</string>
+    <string name="video_sample_activity_title">Video Sample</string>
+
+    <!-- Buttons -->
+    <string name="places_sample_button">Places Sample</string>
+    <string name="youtube_sample_button">Youtube Sample</string>
+    <string name="video_sample_button">Video Sample</string>
+    <string name="tv_shows_sample_activity_title">TV Shows Sample</string>
+    <string name="tv_shows_sample_button">TV Shows Sample</string>
+    <string name="main_activity_places_button_title">Places</string>
+    <string name="main_activity_tv_shows_button_title">Tv Shows</string>
+    <string name="main_activity_youtube_button_title">Youtube</string>
+    <string name="main_activity_video_view_button_title">VideoView</string>
+
+    <!-- API -->
+    <string name="api_truyenhot">http://comicvn.net/truyentranh/apiv2/truyenhot</string>
+
+    <style name="DefaultButtonText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#979797</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:shadowColor">#f9f9f9</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_register">RegisterActivity</string>
+
+
+    <string name="home_tab_1">Truyện Comic</string>
+    <string name="home_tab_2">Mới cập nhật</string>
+</resources>

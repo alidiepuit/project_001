@@ -1,0 +1,47 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@+id/scrollDetail">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        tools:context="com.ali.comic.DetailActivity">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            style="@style/image_view"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal" />
+
+        <comic.ali.com.comicv2.viewmodel.ExpandableTextView
+            android:id="@+id/lorem_ipsum"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:text="Hello my name is Luu Van Diệp. Hello my name is Luu Van Diệp. Hello my name is Luu Van Diệp"
+            android:layout_margin="20dip"
+            android:autoText="false"
+            android:textSize="15dip"
+            android:textIsSelectable="true" />
+<!--
+        <ListView
+            android:id="@+id/listChapter"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lorem_ipsum"/>
+            -->
+        <comic.ali.com.comicv2.viewmodel.GridViewChapter
+            android:id="@+id/listChapter"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@+id/lorem_ipsum"/>
+
+    </RelativeLayout>
+</ScrollView>
