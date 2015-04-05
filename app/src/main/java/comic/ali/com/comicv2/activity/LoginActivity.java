@@ -34,6 +34,7 @@ import comic.ali.com.comicv2.model.Chapter;
 import comic.ali.com.comicv2.model.Tools;
 import comic.ali.com.comicv2.model.User;
 import comic.ali.com.comicv2.renderer.ListChapterArrayAdapter;
+import comic.ali.com.comicv2.tools.CallAPI;
 import comic.ali.com.comicv2.viewmodel.ExpandableTextView;
 import comic.ali.com.comicv2.viewmodel.GridViewChapter;
 
@@ -48,13 +49,16 @@ public class LoginActivity extends Activity {
         but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TextView error = (TextView)findViewById(R.id.error);
                 EditText username = (EditText)findViewById(R.id.etUserName);
                 EditText password = (EditText)findViewById(R.id.etPass);
                 String name = username.getText().toString();
                 String pass = password.getText().toString();
                 if(name.length() > 0 && pass.length() > 0) {
-                    apiURL = apiURL + "?username=" + name + "&password=" + Tools.md5(pass);
-                    new CallAPI().execute(apiURL);
+                    apiURL = apiURL + "?username=" + name + "&password=" + Tools.encrypt(pass);
+                    new LoginAPI().execute(apiURL);
+                } else {
+                    error.setText("Kiểm tra lại thông tin đăng nhập");
                 }
             }
         });
@@ -70,54 +74,17 @@ public class LoginActivity extends Activity {
         });
     }
 
-    private class CallAPI extends AsyncTask<String, String, String> {
-        String response;
-        Activity activity;
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            URL url = null;
-            JSONObject object = null;
-            InputStream inStream = null;
-            String apiURL = params[0];
-            try {
-                url = new URL(apiURL.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.connect();
-                inStream = urlConnection.getInputStream();
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-                String temp;
-                StringBuilder builder = new StringBuilder();
-                while ((temp = bReader.readLine()) != null) {
-                    builder.append(temp);
-                }
-                String res = builder.toString();
-                this.response = res;
-            } catch (Exception e) {
-                Exception exp = e;
-            } finally {
-                if (inStream != null) {
-                    try {
-                        // this will close the bReader as well
-                        inStream.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return this.response;
-        }
-
+    private class LoginAPI extends CallAPI {
         protected void onPostExecute(String result) {
             if(result != null && result.length() > 0) {
                 final GsonBuilder gsonBuilder = new GsonBuilder();
                 final Gson gson = gsonBuilder.create();
                 final User user = gson.fromJson(result, User.class);
+                if(user.message != null && !user.message.isEmpty()) {
+                    TextView error = (TextView)findViewById(R.id.error);
+                    error.setText(user.message);
+                    return;
+                }
                 if(user.logined == 1) {
                     SharedPreferences sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
@@ -126,14 +93,14 @@ public class LoginActivity extends Activity {
                     editor.putString("userid", user.userid);
                     editor.commit();
 
-//                    Intent intent = new Intent(LoginActivity.this, TvShowsActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
-                    finish();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             }
+            finish();
         }
-    } // end CallAPI
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

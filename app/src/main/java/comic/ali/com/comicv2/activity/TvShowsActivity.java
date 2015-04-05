@@ -34,8 +34,6 @@ import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.github.pedrovgs.DraggableListener;
-import com.github.pedrovgs.DraggableView;
 
 import comic.ali.com.comicv2.R;
 import comic.ali.com.comicv2.model.Manga;
@@ -93,9 +91,6 @@ public class TvShowsActivity extends DIFragmentActivity {
         this.context = this;
         ButterKnife.inject(this);
         initializeGridView();
-
-        TextView tvHome = (TextView) findViewById(R.id.tv_home);
-        tvHome.setText("Truyện COMIC mới cập nhật");
 
         MySliderAdapter slider = new MySliderAdapter(this);
 

@@ -55,6 +55,9 @@ public class Manga extends Item {
      * @return the tv show poster.
      */
     public String getPoster() {
+        if(image_chapter == null || image_chapter.isEmpty()) {
+            return this.initImage(image);
+        }
         return this.initImage(image_chapter);
     }
 

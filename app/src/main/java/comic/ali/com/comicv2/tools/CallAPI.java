@@ -50,9 +50,7 @@ public class CallAPI extends AsyncTask<String, String, String> {
             while ((temp = bReader.readLine()) != null) {
                 builder.append(temp);
             }
-            String res = builder.toString();
-
-            this.response = res;
+            response = builder.toString();
         } catch (Exception e) {
             Exception exp = e;
         } finally {
@@ -67,6 +65,6 @@ public class CallAPI extends AsyncTask<String, String, String> {
                 urlConnection.disconnect();
             }
         }
-        return this.response;
+        return response;
     }
-} // end CallAPI
+}

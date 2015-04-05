@@ -17,6 +17,11 @@ package comic.ali.com.comicv2;
 
 import android.app.Application;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
+
+import java.util.HashMap;
+
 import comic.ali.com.comicv2.di.MainModule;
 
 import dagger.ObjectGraph;
@@ -29,23 +34,25 @@ import dagger.ObjectGraph;
  */
 public class DraggablePanelApplication extends Application {
 
-  private ObjectGraph objectGraph;
+    private ObjectGraph objectGraph;
 
-  /**
-   * Override method used to initialize the dependency container graph with the MainModule.
-   */
-  @Override public void onCreate() {
-    super.onCreate();
-    MainModule mainModule = new MainModule(this);
-    objectGraph = ObjectGraph.create(mainModule);
-    objectGraph.inject(this);
-    objectGraph.injectStatics();
-  }
+    /**
+     * Override method used to initialize the dependency container graph with the MainModule.
+     */
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        MainModule mainModule = new MainModule(this);
+        objectGraph = ObjectGraph.create(mainModule);
+        objectGraph.inject(this);
+        objectGraph.injectStatics();
 
-  /**
-   * Inject an object to provide all the needed dependencies.
-   */
-  public void inject(Object object) {
-    objectGraph.inject(object);
-  }
+    }
+
+    /**
+     * Inject an object to provide all the needed dependencies.
+     */
+    public void inject(Object object) {
+        objectGraph.inject(object);
+    }
 }

@@ -1,46 +1,43 @@
 package comic.ali.com.comicv2.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import comic.ali.com.comicv2.R;
+import comic.ali.com.comicv2.model.Chapter;
 import comic.ali.com.comicv2.renderer.FullScreenImageAdapter;
+import comic.ali.com.comicv2.tools.Ads;
+import comic.ali.com.comicv2.tools.Analytics;
+import comic.ali.com.comicv2.tools.CallAPI;
+import comic.ali.com.comicv2.viewmodel.ReaderViewPager;
 
 
 public class ReaderActivity extends Activity {
-    public String apiURL = "http://comicvn.net/truyentranh/apiv2/hinhtruyen?id=";
+    public String apiURL = "http://comicvn.net/truyentranh/apiv2/hinhtruyen";
     public static Context context = null;
-
+    ReaderViewPager viewPager;
+    int current_ord;
+    FullScreenImageAdapter adapter;
+    public static boolean startSwiping = true;
+    public static boolean startSwipingRightToLeft = true;
+    ProgressDialog pDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +46,78 @@ public class ReaderActivity extends Activity {
 
         Intent intent = getIntent();
         String idChapter = intent.getStringExtra("id_chapter");
-        apiURL = apiURL + idChapter;
-        new CallAPI().execute(apiURL);
+        current_ord = Integer.valueOf(intent.getStringExtra("ord"));
+
+        adapter = new FullScreenImageAdapter(ReaderActivity.this, null);
+        viewPager = (ReaderViewPager) findViewById(R.id.view_pager_reader);
+        viewPager.setAdapter(adapter);
+        viewPager.setOnSwipeOutListener(new ReaderViewPager.OnSwipeOutListener() {
+            @Override
+            public void onSwipeOutAtStart() {
+                if(startSwiping) {
+                    startSwiping = false;
+                    ArrayList<Chapter> chapters = DetailActivity.listChapter;
+                    Chapter firstChapter = chapters.get(chapters.size() - 1);
+                    if (current_ord - 1 < Integer.valueOf(firstChapter.ord)) {
+                        Toast.makeText(ReaderActivity.context, "Bạn đang đọc chap đầu tiên.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    /*
+                    String idChapter = "";
+                    for (Chapter ch : chapters) {
+                        if (Integer.valueOf(ch.ord) <= current_ord - 1) {
+                            idChapter = ch.id;
+                            break;
+                        }
+                    }
+                    current_ord -= 1;
+                    String api = apiURL + "?id=" + idChapter;
+                    new CallAPIChapter().execute(api);
+                    */
+                }
+            }
+
+            @Override
+            public void onSwipeOutAtEnd() {
+                if(startSwipingRightToLeft) {
+                    startSwipingRightToLeft = false;
+                    ArrayList<Chapter> chapters = DetailActivity.listChapter;
+                    Chapter lastChapter = chapters.get(0);
+                    if(current_ord+1 > Integer.valueOf(lastChapter.ord)) {
+                        Toast.makeText(ReaderActivity.context, "Bạn đang đọc chap mới nhất.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                /*
+                String idChapter = "";
+                int minOrd = -1;
+                for(Chapter ch:chapters) {
+                    if(Integer.valueOf(ch.ord) >= current_ord+1 && (minOrd == -1 || minOrd > Integer.valueOf(ch.ord))) {
+                        idChapter = ch.id;
+                        minOrd = Integer.valueOf(ch.ord);
+                    }
+                    if(Integer.valueOf(ch.ord) < current_ord+1) {
+                        break;
+                    }
+                }
+                current_ord += 1;
+                String api = apiURL + "?id=" + idChapter;
+                new CallAPIChapter().execute(api);
+                */
+                }
+            }
+        });
+
+
+        String api = apiURL + "?id=" + idChapter;
+        new CallAPIChapter().execute(api);
+
+        new AdsCall().execute();
+
+
+        //Get a Tracker (should auto-report)
+        Tracker t = ((Analytics)getApplication()).getTracker(Analytics.TrackerName.APP_TRACKER);
+        t.setScreenName("Read");
+        t.send(new HitBuilders.AppViewBuilder().build());
     }
 
     @Override
@@ -75,57 +142,51 @@ public class ReaderActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class CallAPI extends AsyncTask<String, String, String[]> {
-        String[] response;
+    private class CallAPIChapter extends CallAPI {
         @Override
-        protected String[] doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            URL url = null;
-            JSONObject object = null;
-            InputStream inStream = null;
-            try {
-                url = new URL(apiURL.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.connect();
-                inStream = urlConnection.getInputStream();
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-                String temp;
-                StringBuilder builder = new StringBuilder();
-                while ((temp = bReader.readLine()) != null) {
-                    builder.append(temp);
-                }
-                String res = builder.toString();
-//                String res = "{\"sys\":{\"country\":\"GB\",\"sunrise\":1381107633,\"sunset\":1381149604}}";
-//                object = new JSONObject(res);
-
+        protected void onPreExecute() {
+            pDialog = ProgressDialog.show(ReaderActivity.this, getString(R.string.dialog_title), getString(R.string.dialog_loading), true, false);
+        }
+        protected void onPostExecute(String result) {
+            if(result != null && result.length() > 0) {
                 final GsonBuilder gsonBuilder = new GsonBuilder();
                 final Gson gson = gsonBuilder.create();
-                this.response = gson.fromJson(res, String[].class);
-            } catch (Exception e) {
-                Exception exp = e;
-            } finally {
-                if (inStream != null) {
-                    try {
-                        // this will close the bReader as well
-                        inStream.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return this.response;
-        }
+                String[] listImage = gson.fromJson(result, String[].class);
 
-        protected void onPostExecute(String[] result) {
-            ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager_reader);
-            ArrayList<String> list = new ArrayList<String>(Arrays.asList(result));
-            FullScreenImageAdapter adapter = new FullScreenImageAdapter(ReaderActivity.this, list);
-            viewPager.setAdapter(adapter);
+                ArrayList<String> list = new ArrayList<String>(Arrays.asList(listImage));
+                int index = 0;
+                if(list.size() > 1) {
+                    Random randomGenerator = new Random();
+                    index = randomGenerator.nextInt(list.size() - 1);
+                }
+                list.add(index, "ads");
+                adapter.setData(list);
+                adapter.notifyDataSetChanged();
+            }
+            pDialog.dismiss();
         }
-    } // end CallAPI
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Get an Analytics tracker to report app starts and uncaught exceptions etc.
+        GoogleAnalytics.getInstance(this).reportActivityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //Stop the analytics tracking
+        GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
+
+    private class AdsCall extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Ads.getIdThread(ReaderActivity.context);
+            return null;
+        }
+    }
 }

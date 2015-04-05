@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import comic.ali.com.comicv2.activity.TvShowsActivity;
+import comic.ali.com.comicv2.tools.CallAPI;
 import comic.ali.com.comicv2.tools.CallMangaAPI;
 import comic.ali.com.comicv2.viewmodel.TvShowCollectionViewModel;
 import comic.ali.com.comicv2.viewmodel.TvShowViewModel;
@@ -36,54 +37,11 @@ public class TvShowAdapter extends RendererAdapter<TvShowViewModel> {
         super(layoutInflater, rendererBuilder, collection);
         this.collection = collection;
 
-        CallAPI callAPI = new CallAPI();
         String api = "http://comicvn.net/truyentranh/apiv2/truyenhot";
-        callAPI.execute(api);
+        new CallAPITruyenHot().execute(api);
     }
 
-    public class CallAPI extends AsyncTask<String, String, String> {
-        String response;
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            URL url = null;
-            JSONObject object = null;
-            InputStream inStream = null;
-            String apiURL = params[0];
-            try {
-                url = new URL(apiURL.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.connect();
-                inStream = urlConnection.getInputStream();
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-                String temp;
-                StringBuilder builder = new StringBuilder();
-                while ((temp = bReader.readLine()) != null) {
-                    builder.append(temp);
-                }
-                String res = builder.toString();
-
-                this.response = res;
-            } catch (Exception e) {
-                Exception exp = e;
-            } finally {
-                if (inStream != null) {
-                    try {
-                        // this will close the bReader as well
-                        inStream.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return this.response;
-        }
-
+    public class CallAPITruyenHot extends CallAPI {
         @Override
         protected void onPostExecute(String result) {
             updateList(result);

@@ -2,6 +2,7 @@ package comic.ali.com.comicv2.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import java.net.URL;
 import comic.ali.com.comicv2.R;
 import comic.ali.com.comicv2.model.Tools;
 import comic.ali.com.comicv2.model.User;
+import comic.ali.com.comicv2.tools.CallAPI;
 
 public class RegisterActivity extends Activity {
     public final String apiURL = "http://comicvn.net/truyentranh/apiv2/register";
@@ -50,7 +52,7 @@ public class RegisterActivity extends Activity {
                         pass.length() >= 6 && pass.length() < 50 &&
                         pass.equals(passRepeat)) {
                     String api = apiURL + "?username=" + name + "&password=" + Tools.encrypt(pass);
-                    new CallAPI().execute(api);
+                    new RegisterAPI().execute(api);
                 } else {
                     TextView error = (TextView)findViewById(R.id.errorRegister);
                     error.setText("Kiểm tra lại thông tin đăng nhập");
@@ -59,49 +61,7 @@ public class RegisterActivity extends Activity {
         });
     }
 
-    private class CallAPI extends AsyncTask<String, String, String> {
-        String response;
-        Activity activity;
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            URL url = null;
-            JSONObject object = null;
-            InputStream inStream = null;
-            String apiURL = params[0];
-            try {
-                url = new URL(apiURL.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.connect();
-                inStream = urlConnection.getInputStream();
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-                String temp;
-                StringBuilder builder = new StringBuilder();
-                while ((temp = bReader.readLine()) != null) {
-                    builder.append(temp);
-                }
-                String res = builder.toString();
-                this.response = res;
-            } catch (Exception e) {
-                Exception exp = e;
-            } finally {
-                if (inStream != null) {
-                    try {
-                        // this will close the bReader as well
-                        inStream.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return this.response;
-        }
-
+    private class RegisterAPI extends CallAPI {
         protected void onPostExecute(String result) {
             if(result != null && result.length() > 0) {
                 final GsonBuilder gsonBuilder = new GsonBuilder();
@@ -119,8 +79,11 @@ public class RegisterActivity extends Activity {
                     editor.putInt("logined", user.logined);
                     editor.putString("userid", user.userid);
                     editor.commit();
-                    Toast.makeText(getBaseContext(), "Chào mừng " + user.username, Toast.LENGTH_LONG);
-                    finish();
+                    Toast.makeText(getBaseContext(), "Chào mừng " + user.username, Toast.LENGTH_LONG).show();
+
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             }
         }

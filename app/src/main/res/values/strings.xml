@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_favorite_active">Unfavorite</string>
-    <string name="action_search">Tim</string>
+    <string name="action_search">Tìm truyện</string>
     <string name="app_home">Trang chu</string>
     <string name="app_detail">Chi tiet</string>
     <string name="app_reader">Doc truyen</string>
@@ -44,8 +44,15 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_register">RegisterActivity</string>
-
+    <string name="title_activity_category">Thể loại</string>
+    <string name="title_activity_search">Tìm</string>
 
     <string name="home_tab_1">Truyện Comic</string>
-    <string name="home_tab_2">Mới cập nhật</string>
+    <string name="home_tab_favorite">Yêu thích</string>
+    <string name="home_tab_category">Thể loại</string>
+
+    <string name="dialog_title">Thông báo</string>
+    <string name="dialog_loading">Đang tải dữ liệu</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-8883615895168553/7631808023</string>
 </resources>

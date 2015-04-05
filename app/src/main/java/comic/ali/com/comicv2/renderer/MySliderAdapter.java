@@ -33,10 +33,12 @@ import java.util.List;
 
 import comic.ali.com.comicv2.R;
 import comic.ali.com.comicv2.activity.DetailActivity;
+import comic.ali.com.comicv2.activity.MainActivity;
 import comic.ali.com.comicv2.activity.ReaderActivity;
 import comic.ali.com.comicv2.activity.TvShowsActivity;
 import comic.ali.com.comicv2.fragment.HomeFragment;
 import comic.ali.com.comicv2.model.Chapter;
+import comic.ali.com.comicv2.tools.CallAPI;
 import comic.ali.com.comicv2.viewmodel.TvShowViewModel;
 
 /**
@@ -47,54 +49,11 @@ public class MySliderAdapter{
     public MySliderAdapter(Context context) {
         this.context = context;
 
-        CallAPI callAPI = new CallAPI();
         String api = "http://comicvn.net/truyentranh/apiv2/truyenmoi?num=5";
-        callAPI.execute(api);
+        new CallAPITruyenMoi().execute(api);
     }
 
-    public class CallAPI extends AsyncTask<String, String, String> {
-        String response;
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection urlConnection = null;
-            URL url = null;
-            JSONObject object = null;
-            InputStream inStream = null;
-            String apiURL = params[0];
-            try {
-                url = new URL(apiURL.toString());
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-                urlConnection.setDoInput(true);
-                urlConnection.connect();
-                inStream = urlConnection.getInputStream();
-                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
-                String temp;
-                StringBuilder builder = new StringBuilder();
-                while ((temp = bReader.readLine()) != null) {
-                    builder.append(temp);
-                }
-                String res = builder.toString();
-
-                this.response = res;
-            } catch (Exception e) {
-                Exception exp = e;
-            } finally {
-                if (inStream != null) {
-                    try {
-                        // this will close the bReader as well
-                        inStream.close();
-                    } catch (IOException ignored) {
-                    }
-                }
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-            }
-            return this.response;
-        }
-
+    public class CallAPITruyenMoi extends CallAPI {
         @Override
         protected void onPostExecute(String result) {
             updateList(result);
@@ -103,7 +62,7 @@ public class MySliderAdapter{
 
     public void updateList(String result) {
         if(result != null && result.length() > 0) {
-            SliderLayout mDemoSlider = (SliderLayout) HomeFragment.viewTab.findViewById(R.id.slideHome);
+//            SliderLayout mDemoSlider = (SliderLayout) HomeFragment.viewTab.findViewById(R.id.slideHome);
             final GsonBuilder gsonBuilder = new GsonBuilder();
             final Gson gson = gsonBuilder.create();
             TvShowViewModel[] listManga = gson.fromJson(result, TvShowViewModel[].class);
@@ -119,18 +78,18 @@ public class MySliderAdapter{
                             .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
                                 @Override
                                 public void onSliderClick(BaseSliderView slider) {
-                                    Intent myIntent = new Intent(TvShowsActivity.context, DetailActivity.class);
+                                    Intent myIntent = new Intent(MainActivity.context, DetailActivity.class);
                                     myIntent.putExtra("detail", detail);
-                                    TvShowsActivity.context.startActivity(myIntent);
+                                    MainActivity.context.startActivity(myIntent);
                                 }
                             });
 
-                    mDemoSlider.addSlider(textSliderView);
+//                    mDemoSlider.addSlider(textSliderView);
                 }
-                mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-                mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-                mDemoSlider.setCustomAnimation(new DescriptionAnimation());
-                mDemoSlider.setDuration(4000);
+//                mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+//                mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+//                mDemoSlider.setCustomAnimation(new DescriptionAnimation());
+//                mDemoSlider.setDuration(4000);
             }
         }
     }

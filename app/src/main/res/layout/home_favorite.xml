@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<comic.ali.com.comicv2.viewmodel.ObservableScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@+id/titleBarBG"
+    tools:context=".MainActivity"
+    android:id="@+id/scrollview">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ll_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f1f1f1">
+
+        <!-- Grid View -->
+        <comic.ali.com.comicv2.viewmodel.MyGridView
+            android:id="@+id/gv_tv_shows"
+            style="@style/tv_show_grid_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</comic.ali.com.comicv2.viewmodel.ObservableScrollView>

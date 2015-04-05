@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.activity_tv_shows_sample, container, false);
-
         this.viewTab = view;
         MyGridView tvShowsGridView = (MyGridView)view.findViewById(R.id.gv_tv_shows);
         adapter = new GridHomeAdapter(MainActivity.context, null);
@@ -60,15 +59,15 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        MySliderAdapter slider = new MySliderAdapter(MainActivity.context);
+        //MySliderAdapter slider = new MySliderAdapter(MainActivity.context);
         return view;
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser && tool != null) {
-//            tool.callAPI();
-//        }
+        //super.setUserVisibleHint(isVisibleToUser);
+        //if(isVisibleToUser) {
+        //    adapter.notifyDataSetChanged();
+        //}
     }
 }

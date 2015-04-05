@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
@@ -34,8 +37,15 @@ public class FullScreenImageAdapter extends PagerAdapter {
         this._imagePaths = imagePaths;
     }
 
+    public void setData(ArrayList<String> list) {
+        this._imagePaths = list;
+    }
+
     @Override
     public int getCount() {
+        if(this._imagePaths == null || this._imagePaths.size() <= 0) {
+            return 0;
+        }
         return this._imagePaths.size();
     }
 
@@ -44,31 +54,32 @@ public class FullScreenImageAdapter extends PagerAdapter {
         return view == ((RelativeLayout) object);
     }
 
+    static class ViewHolder {
+        TouchImageView image;
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         TouchImageView imgDisplay;
-        Button btnClose;
 
         inflater = (LayoutInflater) _activity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
                 false);
+        if(_imagePaths.get(position) == "ads") {
+            AdView mAdView = (AdView)viewLayout.findViewById(R.id.adView);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+            ((ViewPager) container).addView(viewLayout);
+            return viewLayout;
+        }
 
         imgDisplay = (TouchImageView) viewLayout.findViewById(R.id.imgDisplay);
-        btnClose = (Button) viewLayout.findViewById(R.id.btnClose);
 
         Picasso.with(_activity)
                 .load(_imagePaths.get(position))
                 .placeholder(R.drawable.tv_show_placeholder)
                 .into(imgDisplay);
-
-        // close button click event
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _activity.finish();
-            }
-        });
 
         ((ViewPager) container).addView(viewLayout);
 

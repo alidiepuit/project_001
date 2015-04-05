@@ -23,16 +23,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/text_error"
+            android:singleLine="true"
             android:text=""/>
         <EditText
             android:id="@+id/etUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_top_bg"
-            android:singleLine="true"
             android:padding="10dp"
             android:hint="Email"
-            android:textColorHint="#cccccc"/>
+            android:singleLine="true"
+            android:textColorHint="#cccccc"
+            android:textColor="@color/black"/>
         <EditText
             android:id="@+id/etPass"
             android:layout_width="match_parent"
@@ -43,7 +45,9 @@
             android:padding="10dp"
             android:hint="Password"
             android:textColorHint="#cccccc"
-            android:password="true"/>
+            android:maxLines="1"
+            android:password="true"
+            android:textColor="@color/black"/>
         <EditText
             android:id="@+id/etPassRepeat"
             android:layout_width="match_parent"
@@ -52,9 +56,11 @@
             android:layout_marginTop="-2dp"
             android:singleLine="true"
             android:padding="10dp"
-            android:hint="Password"
+            android:hint="Confirm"
             android:textColorHint="#cccccc"
-            android:password="true"/>
+            android:maxLines="1"
+            android:password="true"
+            android:textColor="@color/black"/>
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"

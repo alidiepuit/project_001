@@ -12,24 +12,27 @@
         android:background="#f1f1f1">
 
         <!-- Grid View -->
+        <!--
         <com.daimajia.slider.library.SliderLayout
             android:id="@+id/slideHome"
             android:layout_width="fill_parent"
             android:layout_height="200dip"
             android:gravity="center" />
-
+            -->
+<!--
         <TextView
             android:id="@+id/tv_home"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/slideHome"
-            android:height="50dip" />
+            android:height="50dip"
+            android:layout_below="@+id/slideHome"/>
+            -->
 
         <comic.ali.com.comicv2.viewmodel.MyGridView
             android:id="@+id/gv_tv_shows"
             style="@style/tv_show_grid_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_home" />
+             />
     </RelativeLayout>
 </ScrollView>

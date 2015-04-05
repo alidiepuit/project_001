@@ -18,7 +18,13 @@
         android:layout_centerInParent="true"
         android:padding="10dp"
         >
-
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_error"
+            android:singleLine="true"
+            android:text=""/>
         <EditText
             android:id="@+id/etUserName"
             android:layout_width="match_parent"
@@ -26,7 +32,9 @@
             android:background="@drawable/edittext_top_bg"
             android:padding="10dp"
             android:hint="Email"
-            android:textColorHint="#cccccc"/>
+            android:singleLine="true"
+            android:textColorHint="#cccccc"
+            android:textColor="@color/black"/>
         <EditText
             android:id="@+id/etPass"
             android:layout_width="match_parent"
@@ -35,7 +43,9 @@
             android:layout_marginTop="-2dp"
             android:padding="10dp"
             android:hint="Password"
+            android:singleLine="true"
             android:textColorHint="#cccccc"
+            android:textColor="@color/black"
             android:password="true"/>
         <Button
             android:id="@+id/btnSingIn"
