@@ -4,10 +4,10 @@
     <string name="action_favorite">Favorite</string>
     <string name="action_favorite_active">Unfavorite</string>
     <string name="action_search">Tìm truyện</string>
-    <string name="app_home">Trang chu</string>
-    <string name="app_detail">Chi tiet</string>
-    <string name="app_reader">Doc truyen</string>
-    <string name="app_name">ComicV2</string>
+    <string name="app_home">Trang chủ</string>
+    <string name="app_detail">Chi tiết</string>
+    <string name="app_reader">Đọc Truyện</string>
+    <string name="app_name">Truyện Tranh</string>
 
     <!-- Activity name -->
     <string name="places_sample_activity_title">Places Sample</string>
@@ -43,7 +43,7 @@
     </style>
 
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_register">Đăng ký</string>
     <string name="title_activity_category">Thể loại</string>
     <string name="title_activity_search">Tìm</string>
 
@@ -54,5 +54,6 @@
     <string name="dialog_title">Thông báo</string>
     <string name="dialog_loading">Đang tải dữ liệu</string>
 
+    <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_ad_unit_id">ca-app-pub-8883615895168553/7631808023</string>
 </resources>

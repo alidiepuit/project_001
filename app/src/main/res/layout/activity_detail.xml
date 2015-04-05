@@ -19,7 +19,7 @@
             android:layout_height="200dp"
             android:layout_gravity="center_horizontal" />
 
-        <comic.ali.com.comicv2.viewmodel.ExpandableTextView
+        <comic.ali.com.truyentranh.viewmodel.ExpandableTextView
             android:id="@+id/lorem_ipsum"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lorem_ipsum"/>
             -->
-        <comic.ali.com.comicv2.viewmodel.GridViewChapter
+        <comic.ali.com.truyentranh.viewmodel.GridViewChapter
             android:id="@+id/listChapter"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

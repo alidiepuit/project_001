@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <comic.ali.com.comicv2.viewmodel.ReaderViewPager
+    <comic.ali.com.truyentranh.viewmodel.ReaderViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/view_pager_reader"
         android:layout_width="fill_parent"
