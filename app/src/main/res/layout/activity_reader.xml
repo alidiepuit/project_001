@@ -3,7 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <comic.ali.com.truyentranh.viewmodel.ReaderViewPager
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="fill_parent"
+        android:layout_height="5dip"
+        style="@android:style/Widget.ProgressBar.Horizontal"/>
+    <com.ali.truyentranh.viewmodel.ReaderViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/view_pager_reader"
         android:layout_width="fill_parent"

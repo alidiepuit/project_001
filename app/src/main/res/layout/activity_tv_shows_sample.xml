@@ -28,7 +28,7 @@
             android:layout_below="@+id/slideHome"/>
             -->
 
-        <comic.ali.com.truyentranh.viewmodel.MyGridView
+        <com.ali.truyentranh.viewmodel.MyGridView
             android:id="@+id/gv_tv_shows"
             style="@style/tv_show_grid_view"
             android:layout_width="fill_parent"

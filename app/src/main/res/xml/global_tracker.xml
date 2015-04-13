@@ -3,5 +3,5 @@
     <string name="ga_logLevel">verbose</string>
     <integer name="ga_dispatchPeriod">30</integer>
     <bool name="ga_dryRun">false</bool>
-    <string name="comic.ali.com.truyentranh.tools.Analytics">Analytics</string>
+    <string name="com.ali.truyentranh.tools.Analytics">Analytics</string>
 </resources>
