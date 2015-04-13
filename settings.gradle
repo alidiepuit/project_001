@@ -1,3 +1,2 @@
-include ':draggablepanel'
-include ':app'
+include ':app', ':libDownloadImage'
 
