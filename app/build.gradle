@@ -3,12 +3,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 16
     buildToolsVersion "21.1.2"
-
     defaultConfig {
-        applicationId "comic.ali.com.truyentranh"
+        applicationId 'com.ali.truyentranh'
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 2
+        versionCode 4
         versionName "1.0"
     }
     buildTypes {
@@ -20,22 +19,24 @@ android {
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/universal-image-loader-1.9.3.jar')
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:appcompat-v7:18.0.+'
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'javax.inject:javax.inject:1@jar'
     compile 'com.squareup.dagger:dagger-compiler:1.1.0'
     compile 'com.jakewharton:butterknife:4.0.1'
     compile 'com.squareup.dagger:dagger:1.1.0'
     compile 'com.github.pedrovgs:renderers:1.0.9'
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.2@aar'
     compile 'com.google.android.gms:play-services-analytics:7.0.0'
     compile 'com.google.android.gms:play-services-ads:7.0.0'
+    compile project(':libDownloadImage')
 }
