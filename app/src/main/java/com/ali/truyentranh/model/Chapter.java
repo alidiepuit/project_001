@@ -21,12 +21,24 @@ public class Chapter extends Item {
     public void setVisited(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("chapter", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(id, true);
+        editor.putBoolean(id + "_read", true);
         editor.commit();
     }
 
     public boolean checkVisited(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences("chapter", Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(id, false);
+        return sharedPref.getBoolean(id + "_read", false);
+    }
+
+    public void setDownloaded(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("chapter", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(id + "_downloaded", true);
+        editor.commit();
+    }
+
+    public boolean checkDownloaded(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences("chapter", Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(id + "_downloaded", false);
     }
 }

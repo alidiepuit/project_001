@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ali.truyentranh.model.Tools;
@@ -42,8 +43,10 @@ import com.ali.truyentranh.viewmodel.ExpandableTextView;
 import com.ali.truyentranh.viewmodel.GridViewChapter;
 import com.squareup.picasso.Target;
 
+import so.droidman.AsyncImageLoader;
 
-public class DetailActivity extends Activity {
+
+public class DetailActivity extends Activity implements AsyncImageLoader.onProgressUpdateListener {
     public String apiURL = "http://comicvn.net/truyentranh/apiv2/truyenchap?id=";
     public static Context context = null;
 
@@ -54,6 +57,7 @@ public class DetailActivity extends Activity {
     public static Menu menu;
     String listDataChapter = "";
     Boolean hasDataChapter = false;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +110,11 @@ public class DetailActivity extends Activity {
         super.onStop();
         //Stop the analytics tracking
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
+
+    @Override
+    public void doUpdateProgress(int progress) {
+        progressBar.setProgress(progress);
     }
 
     public class CallAPICheckFavorite extends CallAPI {
@@ -213,8 +222,14 @@ public class DetailActivity extends Activity {
                     gridViewChapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
                             final Chapter item = (Chapter) adapterView.getItemAtPosition(i);
-                            Tools.downloadChapter(item);
+                            try {
+                                Tools.downloadChapter(item, DetailActivity.this, chapterAdapter, view);
+                            }catch(Exception e) {
+                                e.printStackTrace();
+                            }
                             return true;
                         }
                     });

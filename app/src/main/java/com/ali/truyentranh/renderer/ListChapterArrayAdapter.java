@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,9 +31,11 @@ public class ListChapterArrayAdapter extends ArrayAdapter<Chapter> {
     static class ViewHoder {
         public final TextView ord;
         public final TextView name;
-        public ViewHoder(TextView ord, TextView name) {
+        public final ImageView imageView;
+        public ViewHoder(TextView ord, TextView name, ImageView imageView) {
             this.ord = ord;
             this.name = name;
+            this.imageView = imageView;
         }
     }
 
@@ -45,7 +48,8 @@ public class ListChapterArrayAdapter extends ArrayAdapter<Chapter> {
             rowView = inflater.inflate(R.layout.episode_row, null);
             TextView ord = (TextView) rowView.findViewById(R.id.tv_episode_number);
             TextView name = (TextView) rowView.findViewById(R.id.tv_episode_title);
-            rowView.setTag(new ViewHoder(ord, name));
+            ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+            rowView.setTag(new ViewHoder(ord, name, imageView));
         }
         ViewHoder holder = (ViewHoder)rowView.getTag();
         Chapter chapter = this.values.get(position);
@@ -53,6 +57,9 @@ public class ListChapterArrayAdapter extends ArrayAdapter<Chapter> {
         holder.name.setText(chapter.name);
         if(chapter.checkVisited(this.context)) {
             holder.name.setTextColor(Color.BLUE);
+        }
+        if(chapter.checkDownloaded(this.context)) {
+            holder.imageView.setVisibility(View.VISIBLE);
         }
         return rowView;
     }

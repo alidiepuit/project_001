@@ -1,9 +1,15 @@
 package com.ali.truyentranh.activity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -15,9 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.ali.truyentranh.model.Item;
 import com.ali.truyentranh.model.NavDrawerItem;
+import com.ali.truyentranh.model.Tools;
 import com.ali.truyentranh.renderer.NavDrawerListAdapter;
+import com.ali.truyentranh.tools.CallAPI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -29,7 +39,10 @@ import com.ali.truyentranh.R;
 import com.ali.truyentranh.model.User;
 import com.ali.truyentranh.renderer.TabPagerAdapter;
 import com.ali.truyentranh.tools.Analytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.sql.Time;
 import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity {
@@ -60,13 +73,17 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         context = this;
 
+        if(!Tools.checkOnline(this)) {
+            Toast.makeText(this, "Bạn chưa kết nối internet.", Toast.LENGTH_SHORT).show();
+        }
+
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .build();
         mAdView.loadAd(adRequest);
 
 
-//        SharedPreferences sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE);
+//        SharedPreferences sharedPref = getSharedPreferences("data", Context.MODE_PRIVATE);
 //        SharedPreferences.Editor editor = sharedPref.edit();
 //        editor.clear();
 //        editor.commit();
@@ -96,6 +113,51 @@ public class MainActivity extends ActionBarActivity {
         Tracker t = ((Analytics)getApplication()).getTracker(Analytics.TrackerName.APP_TRACKER);
         t.setScreenName("Home");
         t.send(new HitBuilders.AppViewBuilder().build());
+
+        checkVersion();
+    }
+
+    private void checkVersion() {
+        String api = "http://comicvn.net/truyentranh/apiv2/version";
+        new callAPIcheckVersion().execute(api);
+    }
+
+    private class callAPIcheckVersion extends CallAPI {
+        protected void onPostExecute(String result) {
+            try {
+                if (result != null && !result.isEmpty() && result.length() > 0) {
+                    final GsonBuilder gsonBuilder = new GsonBuilder();
+                    final Gson gson = gsonBuilder.create();
+                    final Item item = gson.fromJson(result, Item.class);
+
+                    int versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+                    if(versionCode < item.result) {
+
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("Đã có phiên bản mới của Truyện Tranh Online. Bạn muốn tải về không?.")
+                                .setTitle(R.string.dialog_title);
+                        builder.setPositiveButton("OK", new
+                                DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent marketIntent = new Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse("market://details?id="
+                                                        + MainActivity.this.getPackageName()));
+                                        MainActivity.this.startActivity(marketIntent);
+                                    }
+                                });
+                        builder.setNegativeButton("Cancel", new
+                                DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+                        AlertDialog dialog = builder.show();
+                    }
+                }
+            }catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initSliceMenu() {
@@ -109,10 +171,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
         navDrawerItems = new ArrayList<NavDrawerItem>();
 
-        // adding nav drawer items to array
-        // What's hot, We  will add a counter here
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(1, -1)));
 
         // Recycle the typed array
         navMenuIcons.recycle();
@@ -120,12 +179,7 @@ public class MainActivity extends ActionBarActivity {
         adapter = new NavDrawerListAdapter(getApplicationContext(),
                 navDrawerItems);
         mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                displayView(i);
-            }
-        });
+        mDrawerList.setOnItemClickListener(new SlideMenuClickListener());
         // enabling action bar app icon and behaving it as toggle button
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
@@ -137,13 +191,13 @@ public class MainActivity extends ActionBarActivity {
             public void onDrawerClosed(View view) {
                 getActionBar().setTitle(mTitle);
                 // calling onPrepareOptionsMenu() to show action bar icons
-                invalidateOptionsMenu();
+                supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 getActionBar().setTitle(mDrawerTitle);
                 // calling onPrepareOptionsMenu() to hide action bar icons
-                invalidateOptionsMenu();
+                supportInvalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -167,12 +221,15 @@ public class MainActivity extends ActionBarActivity {
         Intent myIntent;
         switch (position) {
             case 0:
-                myIntent = new Intent(MainActivity.context, NewsActivity.class);
-                MainActivity.context.startActivity(myIntent);
-                break;
-            case 1:
-                myIntent = new Intent(MainActivity.context, NewsActivity.class);
-                MainActivity.context.startActivity(myIntent);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Nhấn và giữ tên chapter trong 2s, chapter đó sẽ tự động tải về.")
+                        .setTitle(R.string.dialog_title);
+                builder.setPositiveButton("OK", new
+                        DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                AlertDialog dialog = builder.show();
                 break;
             default:
                 break;
@@ -184,6 +241,7 @@ public class MainActivity extends ActionBarActivity {
         super.onStart();
         //Get an Analytics tracker to report app starts and uncaught exceptions etc.
         GoogleAnalytics.getInstance(this).reportActivityStart(this);
+        time = 0;
     }
 
     @Override
@@ -191,6 +249,34 @@ public class MainActivity extends ActionBarActivity {
         super.onStop();
         //Stop the analytics tracking
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
+    }
+
+    private long time = 0;
+    @Override
+    public void onBackPressed() {
+        if (time == 0) {
+            Toast.makeText(this, "Press Back again to quit", Toast.LENGTH_LONG).show();
+            time = System.currentTimeMillis();
+            Thread thread = new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(3500); // As I am using LENGTH_LONG in Toast
+                        time = 0;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+            return;
+        }
+        if (System.currentTimeMillis() - time <= 3500) {
+            super.onBackPressed();
+            MainActivity.this.finish();
+            return;
+        }
+        time = 0;
     }
 
     @Override

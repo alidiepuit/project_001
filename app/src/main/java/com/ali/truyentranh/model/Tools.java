@@ -5,15 +5,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Base64;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ali.truyentranh.R;
 import com.ali.truyentranh.activity.DetailActivity;
 import com.ali.truyentranh.activity.ReaderActivity;
+import com.ali.truyentranh.renderer.ListChapterArrayAdapter;
 import com.ali.truyentranh.tools.CallAPI;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -120,7 +126,33 @@ public class Tools {
         }
     }
 
-    public static void downloadChapter(Chapter chapter) {
+    public static boolean checkOnline(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+    public static Chapter currentChapter;
+    public static ListChapterArrayAdapter listChapterArrayAdapter;
+    public static void downloadChapter(Chapter chapter, final Context context, final ListChapterArrayAdapter adapter, View view) {
+        if(!checkOnline(context)) {
+            Toast.makeText(context, "Bạn chưa kết nối internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(currentChapter != null && !currentChapter.id.isEmpty()) {
+            Toast.makeText(context, "Bạn đang tải về chapter " + currentChapter.name + ". Đợi lượt kế tiếp nha.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(chapter.checkDownloaded(context)) {
+            Toast.makeText(context, "Chapter này đã được tải về.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        currentChapter = chapter;
+        listChapterArrayAdapter = adapter;
+
+        ImageView imageView = (ImageView)view.findViewById(R.id.icon);
+        imageView.setVisibility(View.VISIBLE);
+
         String apiURL = "http://comicvn.net/truyentranh/apiv2/hinhtruyen";
         String api = apiURL + "?id=" + chapter.id;
         new AsyncTask<String, String, String>() {
@@ -166,6 +198,7 @@ public class Tools {
 
             protected void onPostExecute(String result) {
                 if (result != null && !result.isEmpty() && result.length() > 0) {
+                    Tools.storeData(context, "data", currentChapter.id, result);
                     AsyncImageLoader loader = new AsyncImageLoader(
                             new AsyncImageLoader.onImageLoaderListener() {
 
@@ -173,7 +206,10 @@ public class Tools {
                                 public void onImageLoaded(String ok,
                                                           String response) {
                                     if(ok.equals("OK")) {
-                                        Toast.makeText(DetailActivity.context, "Completed", Toast.LENGTH_SHORT).show();
+                                        currentChapter.setDownloaded(context);
+                                        adapter.notifyDataSetChanged();
+                                        Toast.makeText(context, "Tải về thành công.", Toast.LENGTH_SHORT).show();
+                                        currentChapter = null;
                                     }
                                 }
 

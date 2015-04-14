@@ -155,6 +155,7 @@ public class SearchActivity extends Activity implements SearchView.OnQueryTextLi
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setFocusable(true);
         mSearchView.requestFocusFromTouch();
+        mSearchView.setIconifiedByDefault(false);
 
         this.menu = menu;
         return true;

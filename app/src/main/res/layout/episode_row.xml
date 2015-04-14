@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/episode_row"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    style="@style/episode_row">
+    android:layout_height="wrap_content">
 
-  <!-- Episode number -->
+    <!-- Episode number -->
 
-  <TextView android:id="@+id/tv_episode_number"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentLeft="true"
-      android:layout_centerVertical="true"
-      style="@style/episode_number"
-      android:text="1"/>
+    <TextView
+        android:id="@+id/tv_episode_number"
+        style="@style/episode_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="1" />
 
-  <!-- Episode title -->
+    <!-- Episode title -->
 
-  <TextView android:id="@+id/tv_episode_title"
-      android:layout_width="wrap_content"
-      android:layout_height="30dip"
-      android:layout_toRightOf="@id/tv_episode_number"
-      style="@style/episode_title"
-      android:text="Người trong giang hồ"/>
+    <TextView
+        android:id="@+id/tv_episode_title"
+        style="@style/episode_title"
+        android:layout_width="wrap_content"
+        android:layout_height="30dip"
+        android:layout_toRightOf="@id/tv_episode_number"
+        android:singleLine="true"
+        android:paddingRight="50dip"
+        android:text="" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:contentDescription="@string/desc_list_item_icon"
+        android:src="@drawable/ic_action_download_black"
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
+
 </RelativeLayout>

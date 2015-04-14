@@ -62,12 +62,6 @@ public class ReaderActivity extends Activity implements AsyncImageLoader.onProgr
         setContentView(R.layout.activity_reader);
         this.context = this;
 
-        Resources res = getResources();
-        Drawable drawable = res.getDrawable(R.drawable.progress_bar);
-        progressBar = (ProgressBar) findViewById(R.id.loading);
-        progressBar.setMax(100);
-        progressBar.setProgressDrawable(drawable);
-
         Intent intent = getIntent();
         String idChapter = intent.getStringExtra("id_chapter");
         current_ord = Integer.valueOf(intent.getStringExtra("ord"));
@@ -133,7 +127,7 @@ public class ReaderActivity extends Activity implements AsyncImageLoader.onProgr
 
 
         String api = apiURL + "?id=" + idChapter;
-        this.key = Tools.md5(api);
+        this.key = idChapter;
         this.listImage = Tools.getData(this, "data", this.key);
         this.updateListImage(this.listImage);
 
